@@ -92,7 +92,7 @@ for elat in my_range(minlat, maxlat, inc):
         slmr=sorted(lmr)
         mmr=slmr[stanum-1]
 #        print elat,elon,mmr
-        print("%3.2f %4.2f %3.2f" % (elat,elon,mmr))
-        out.write("%3.2f %4.2f %3.2f \n" % (elat,elon,mmr)) 
+        print("%4.2f %3.2f %3.2f" % (elon,elat,mmr))
+        out.write("%4.2f %3.2f %3.2f \n" % (elon,elat,mmr)) 
 
 out.close() 
