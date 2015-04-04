@@ -1,6 +1,7 @@
 #!/usr/bin/python
 
 from optparse import OptionParser
+import math
 
 # Usage string:
 use = "Usage: grid-mR.py --minlat --minlat --minlat --minlat --inc --vel --stanum"
@@ -14,7 +15,7 @@ latitude longitude magnitude_mR
  
 ex:                                                                                
 
-grid-mR.py --minlat --minlat --minlat --minlat --inc --vel --stanum                                                        
+grid-mR.py --minlat --maxlat --minlon --maxlon --inc --vel --stanum                                                        
                                                                                            
 
 """
@@ -59,10 +60,24 @@ def my_range(start, end, step):
         yield start
         start += step
 
-for lat in my_range(minlat, maxlat, inc):
-    for lon in my_range(minlon, maxlon, inc):
-        print lat,lon
-
+for elat in my_range(minlat, maxlat, inc):
+    elatr=math.radians(elat)
+    ecolat=90-elat
+    ecolatr=math.radians(ecolat)
+    for elon in my_range(minlon, maxlon, inc):
+        elonr=math.radians(elon)
+        for file in open('sta.txt','r').readlines():
+            slat=float(file[0:10])
+            slatr=math.radians(slat)
+            scolat=90-slat
+            scolatr=math.radians(scolat)
+            slon=float(file[11:21])
+            slonr=math.radians(slon)
+            selev=float(file[22:28])
+            scode=file[29:33]
+       
+            dist=6371*math.acos((math.cos(ecolatr)*math.cos(scolatr))+(math.sin(ecolatr)*math.sin(scolatr)*math.cos(elonr-slonr)))
+            print elat,elon,slat,slon,dist
 
 
 
