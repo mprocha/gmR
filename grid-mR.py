@@ -15,9 +15,9 @@ latitude longitude magnitude_mR
  
 ex:                                                                                
 
-grid-mR.py --minlat --maxlat --minlon --maxlon --inc --vel --stanum                                                        
-                                                                                           
+grid-mR.py --minlat -25 --maxlat -2.0 --minlon -54 --maxlon -34 --inc 0.5 --vel 0.1182 --stanum 3
 
+                                                                
 """
 
 # Calling Parser:
@@ -31,13 +31,13 @@ parser.add_option("--minlon", dest="minlon", type = float, help="Minimum Longitu
 parser.add_option("--maxlon", dest="maxlon", type = float, help="Maximum Longitude (deg)")
 parser.add_option("--inc",    dest="inc",    type = float, help="Increment (deg) - grid spacing")
 parser.add_option("--vel",    dest="vel",    type = float, help="Ground Velocity in nm/s")
-parser.add_option("--stanum", dest="stanum", type = float, help="Number of stations used in calculation")
+parser.add_option("--stanum", dest="stanum", type = int,   help="Number of stations used in calculation", default=3)
 
 # The final step is to parse the options and arguments into variables we can use later:
 opts, args = parser.parse_args()
 
 # Making sure all mandatory options appeared:
-mandatories = ["minlat", "maxlat", "minlon", "maxlon"]
+mandatories = ["minlat", "maxlat", "minlon", "maxlon", "inc", "vel", "stanum"]
 for m in mandatories:
     if not opts.__dict__[m]:
         print "\n\n\nMANDATORY OPTION IS MISSING\n\n\n"
@@ -59,6 +59,8 @@ def my_range(start, end, step):
     while start <= end:
         yield start
         start += step
+fileout="grid-mR-st"+str(stanum)+".txt"
+out=open(fileout, 'w')
 
 for elat in my_range(minlat, maxlat, inc):
     elatr=math.radians(elat)
@@ -66,6 +68,8 @@ for elat in my_range(minlat, maxlat, inc):
     ecolatr=math.radians(ecolat)
     for elon in my_range(minlon, maxlon, inc):
         elonr=math.radians(elon)
+        ldist=[]
+        lmr=[]
         for file in open('sta.txt','r').readlines():
             slat=float(file[0:10])
             slatr=math.radians(slat)
@@ -75,11 +79,20 @@ for elat in my_range(minlat, maxlat, inc):
             slonr=math.radians(slon)
             selev=float(file[22:28])
             scode=file[29:33]
-       
+        
             dist=6371*math.acos((math.cos(ecolatr)*math.cos(scolatr))+(math.sin(ecolatr)*math.sin(scolatr)*math.cos(elonr-slonr)))
-            print elat,elon,slat,slon,dist
+            mr=math.log10(vel)+(2.3*math.log10(dist))-2.28
 
+            ldist.append(dist)
+            lmr.append(mr)
 
+#            print elat,elon,slat,slon,dist,mr
 
+#        print ldist
+        slmr=sorted(lmr)
+        mmr=slmr[stanum-1]
+#        print elat,elon,mmr
+        print("%3.2f %4.2f %3.2f" % (elat,elon,mmr))
+        out.write("%3.2f %4.2f %3.2f \n" % (elat,elon,mmr)) 
 
-
+out.close() 
