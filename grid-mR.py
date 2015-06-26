@@ -15,7 +15,7 @@ latitude longitude magnitude_mR
  
 ex:                                                                                
 
-grid-mR.py --minlat -25 --maxlat -2.0 --minlon -54 --maxlon -34 --inc 0.5 --vel 0.1182 --stanum 3
+grid-mR.py --minlat -40 --maxlat 6.0 --minlon -74 --maxlon -30 --inc 0.5 --vel 0.1182 --stanum 3
 
                                                                 
 """
@@ -70,7 +70,7 @@ for elat in my_range(minlat, maxlat, inc):
         elonr=math.radians(elon)
         ldist=[]
         lmr=[]
-        for file in open('sta.txt','r').readlines():
+        for file in open('staGlobal-RSBR.txt','r').readlines():
             slat=float(file[0:10])
             slatr=math.radians(slat)
             scolat=90-slat
